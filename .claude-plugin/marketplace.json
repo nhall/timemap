@@ -1,0 +1,14 @@
+{
+  "name": "timemap",
+  "owner": {
+    "name": "Nick Hall"
+  },
+  "description": "The timemap Claude Code plugin.",
+  "plugins": [
+    {
+      "name": "timemap",
+      "source": "./",
+      "description": "Turn a day of Claude Code sessions into a Time Map: hours per ticket, overlap between parallel sessions, and gaps with no activity."
+    }
+  ]
+}

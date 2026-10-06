@@ -1,0 +1,15 @@
+{
+  "name": "timemap",
+  "description": "Turn a day of Claude Code sessions into a Time Map: hours per ticket, overlap between parallel sessions, and gaps with no activity.",
+  "author": {
+    "name": "Nick Hall"
+  },
+  "homepage": "https://github.com/nhall/timemap",
+  "repository": "https://github.com/nhall/timemap",
+  "keywords": [
+    "time-tracking",
+    "timesheet",
+    "sessions"
+  ],
+  "license": "MIT"
+}
