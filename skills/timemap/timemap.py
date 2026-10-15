@@ -27,9 +27,8 @@ IDLE = timedelta(minutes=float(opt("--idle", 15)))
 GROUPS = opt("--groups")
 which = args[0].lower() if args else "yesterday"
 day = {"today": date.today(), "yesterday": date.today() - timedelta(days=1)}.get(which) or date.fromisoformat(which)
-tz = datetime.now().astimezone().tzinfo
-start = datetime.combine(day, datetime.min.time(), tz)
-end = start + timedelta(days=1)
+start = datetime.combine(day, datetime.min.time()).astimezone()  # local offset for that date, not today's
+end = datetime.combine(day + timedelta(days=1), datetime.min.time()).astimezone()
 
 r = lambda h: round(round(h / 0.025) * 0.025, 3)
 hrs = lambda a, b: (b - a).total_seconds() / 3600
@@ -61,7 +60,7 @@ def load_sessions():
                 if t == "custom-title": s["title"] = rec.get("customTitle") or s["title"]
                 elif t in ("ai-title", "agent-name"): s["ai_title"] = rec.get("aiTitle") or rec.get("agentName") or s["ai_title"]
                 if t not in ("user", "assistant") or not rec.get("timestamp"): continue
-                when = datetime.fromisoformat(rec["timestamp"].replace("Z", "+00:00")).astimezone(tz)
+                when = datetime.fromisoformat(rec["timestamp"].replace("Z", "+00:00")).astimezone()
                 if not start <= when < end: continue
                 s["times"].append(when)
                 if t == "user" and "/subagents/" not in path and (p := prompt_text(rec)):
