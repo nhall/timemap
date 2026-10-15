@@ -53,7 +53,7 @@ python3 skills/timemap/timemap.py 2026-10-01 --idle 10            # end stretche
 {"ABC-25": {"desc": "Responsive nav fixes", "sessions": ["<session id>", "..."]}}
 ```
 
-Sessions not in any group get a line of their own.
+Sessions not in any group get a line of their own. An unknown or duplicate session ID stops with an error.
 
 ## License
 

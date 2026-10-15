@@ -79,7 +79,7 @@ def load_sessions():
 
 def sweep(units):
     """Split each moment evenly across the units live in it; collect overlap partners and gaps."""
-    for u in units: u["hours"] = u["overlap"] = 0.0; u["with"] = {}
+    for u in units: u["hours"] = 0.0; u["with"] = {}
     points = sorted({p for u in units for b in u["blocks"] for p in b})
     gaps = []
     for a, b in zip(points, points[1:]):
@@ -89,7 +89,6 @@ def sweep(units):
         h = hrs(a, b)
         for u in live:
             u["hours"] += h / len(live)
-            if len(live) > 1: u["overlap"] += h
             for o in live:
                 if o is not u: u["with"][o["key"]] = u["with"].get(o["key"], 0) + h
     return gaps
@@ -109,8 +108,11 @@ with open(GROUPS) as fh: spec = json.load(fh)
 by_id = {s["id"]: s for s in sessions}
 units, claimed = [], set()
 for key, g in spec.items():
-    members = [by_id[i] for i in g.get("sessions", []) if i in by_id]
-    claimed.update(m["id"] for m in members)
+    for i in g.get("sessions", []):
+        if i not in by_id: sys.exit(f"{key}: no session {i} on {day}")
+        if i in claimed: sys.exit(f"{key}: session {i} is listed twice")
+        claimed.add(i)
+    members = [by_id[i] for i in g.get("sessions", [])]
     if members:
         units.append({"key": key, "desc": g.get("desc", ""), "blocks": [b for m in members for b in m["blocks"]]})
 for s in sessions:

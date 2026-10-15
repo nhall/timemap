@@ -39,6 +39,8 @@ Write the groups to a file in the scratchpad:
 python3 <skill base directory>/timemap.py <day> --groups <groups.json>
 ```
 
+If it exits with an error about a session ID, fix the groups file and rerun.
+
 Show the output verbatim in a code block. Do not recompute, round, or edit any number. The script handles the 0.025 rounding, splits overlapping time evenly, and filters: lines under 5 min are dropped, overlaps under 0.1 h hidden, gaps under 30 min hidden.
 
 After the block, add at most one line for anything ambiguous, such as a session you couldn't place or a grouping call the user may want to change. Don't label gaps; the user fills those in.
