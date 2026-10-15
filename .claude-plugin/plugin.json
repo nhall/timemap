@@ -1,5 +1,6 @@
 {
   "name": "timemap",
+  "version": "1.0.1",
   "description": "Turn a day of Claude Code sessions into a Time Map: hours per ticket, overlap between parallel sessions, and gaps with no activity.",
   "author": {
     "name": "Nick Hall"
