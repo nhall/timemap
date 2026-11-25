@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- The map no longer prints the `‖` overlap column. Running sessions in parallel is normal, so the column was mostly noise. Parallel time is still split evenly, and the lines still add up to the total.
+- Each gap now shows its length, such as `11:18–12:11 (53m)`.
+
 ## 1.0.1 - 2026-10-14
 
 ### Fixed

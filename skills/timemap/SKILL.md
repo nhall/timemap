@@ -1,6 +1,6 @@
 ---
 name: timemap
-description: Build a Time Map of how a calendar day was spent across Claude Code sessions — hours per ticket rounded to 0.025, overlap between parallel sessions, and gaps with no Claude activity — for time tracking. Use when the user runs /timemap or asks how their day/yesterday was spent across sessions.
+description: Build a Time Map of how a calendar day was spent across Claude Code sessions — hours per ticket rounded to 0.025 (parallel sessions split evenly) and gaps with no Claude activity — for time tracking. Use when the user runs /timemap or asks how their day/yesterday was spent across sessions.
 argument-hint: "[yesterday|today|YYYY-MM-DD]"
 ---
 
@@ -41,6 +41,6 @@ python3 <skill base directory>/timemap.py <day> --groups <groups.json>
 
 If it exits with an error about a session ID, fix the groups file and rerun.
 
-Show the output verbatim in a code block. Do not recompute, round, or edit any number. The script handles the 0.025 rounding, splits overlapping time evenly, and filters: lines under 5 min are dropped, overlaps under 0.1 h hidden, gaps under 30 min hidden.
+Show the output verbatim in a code block. Do not recompute, round, or edit any number. The script handles the 0.025 rounding, splits overlapping time evenly, and filters: lines under 5 min are dropped, gaps under 30 min hidden.
 
 After the block, add at most one line for anything ambiguous, such as a session you couldn't place or a grouping call the user may want to change. Don't label gaps; the user fills those in.

@@ -1,18 +1,18 @@
 # timemap
 
-A Claude Code skill that turns a day of Claude Code sessions into a **Time Map** for time tracking: hours per ticket, overlap between sessions you ran in parallel, and the gaps where Claude wasn't in use.
+A Claude Code skill that turns a day of Claude Code sessions into a **Time Map** for time tracking: hours per ticket and the gaps where Claude wasn't in use.
 
 ```
 Time Map — Wed Oct 1 · 6.450 h · 8:52–17:31
 
- 2.375  WEB-123   Checkout form validation + tests      ‖ ABC-25 0.400
- 1.850  ABC-25    Responsive nav fixes + ticket update   ‖ WEB-123 0.400
+ 2.375  WEB-123   Checkout form validation + tests
+ 1.850  ABC-25    Responsive nav fixes + ticket update
  1.300  API       Rate-limit middleware refactor
  0.925  Admin     Shell and editor setup
  ─────
  6.450
 
-Gaps 30 min+:  12:05–12:50 · 15:10–15:45
+Gaps 30 min+:  12:05–12:50 (45m) · 15:10–15:45 (35m)
 ```
 
 ## Install
@@ -32,8 +32,8 @@ Requires Python 3 (the one that ships with macOS works).
 2. Claude reads each session's title, repo and prompts, and groups sessions by ticket ID (`ABC-25`). Work with no ticket gets a short project name, and setup or tooling work goes under `Admin`.
 3. The script renders the map:
    - Hours are rounded to 0.025 h (90 seconds).
-   - Time when two sessions overlap is split evenly between them, and the `‖` column shows who each line overlapped with.
-   - Lines under 5 minutes, overlaps under 0.1 h and gaps under 30 minutes are left out.
+   - Time when sessions run in parallel is split evenly between them, so the lines add up to the total.
+   - Lines under 5 minutes and gaps under 30 minutes are left out.
 
 Claude only does the grouping. Every number comes from the script, so the totals don't drift between runs.
 

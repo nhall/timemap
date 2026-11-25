@@ -12,7 +12,6 @@ import json, sys, glob, os, re
 from datetime import datetime, timedelta, date
 
 MIN_LINE_H = 5 / 60     # lines under 5 minutes are dropped
-MIN_OVERLAP_H = 0.1     # overlap partners shown only at 0.1 h or more
 MIN_GAP = timedelta(minutes=30)
 PAD = timedelta(minutes=1)  # credit for a lone prompt/reply
 ROOT = os.path.expanduser("~/.claude/projects")
@@ -78,20 +77,20 @@ def load_sessions():
     return sorted(out, key=lambda s: s["blocks"][0][0])
 
 def sweep(units):
-    """Split each moment evenly across the units live in it; collect overlap partners and gaps."""
-    for u in units: u["hours"] = 0.0; u["with"] = {}
+    """Split each moment evenly across the units live in it; collect gaps."""
+    for u in units: u["hours"] = 0.0
     points = sorted({p for u in units for b in u["blocks"] for p in b})
     gaps = []
     for a, b in zip(points, points[1:]):
         live = [u for u in units if any(x <= a and b <= y for x, y in u["blocks"])]
         if not live:
             gaps.append((a, b)); continue
-        h = hrs(a, b)
-        for u in live:
-            u["hours"] += h / len(live)
-            for o in live:
-                if o is not u: u["with"][o["key"]] = u["with"].get(o["key"], 0) + h
+        for u in live: u["hours"] += hrs(a, b) / len(live)
     return gaps
+
+def span(a, b):
+    m = round((b - a).total_seconds() / 60)
+    return f"{m // 60}h {m % 60:02d}m" if m >= 60 else f"{m}m"
 
 sessions = load_sessions()
 for s in sessions: s["key"] = s["id"]
@@ -121,18 +120,14 @@ for s in sessions:
 
 gaps = sweep(units)
 shown = sorted((u for u in units if u["hours"] >= MIN_LINE_H), key=lambda u: -u["hours"])
-keys = {u["key"] for u in shown}
 total = sum(r(u["hours"]) for u in shown)
 first = min(b[0] for u in units for b in u["blocks"])
 last = max(b[1] for u in units for b in u["blocks"])
 kw = max([len(u["key"]) for u in shown] + [8])
-dw = max([len(u["desc"]) for u in shown] + [20])
 
 print(f"Time Map — {day:%a %b %-d} · {total:.3f} h · {first:%-H:%M}–{last:%-H:%M}\n")
 for u in shown:
-    partners = sorted(((k, h) for k, h in u["with"].items() if k in keys and r(h) >= MIN_OVERLAP_H), key=lambda x: -x[1])
-    ovl = "‖ " + ", ".join(f"{k} {r(h):.3f}" for k, h in partners) if partners else ""
-    print(f" {r(u['hours']):.3f}  {u['key']:<{kw}}  {u['desc']:<{dw}}  {ovl}".rstrip())
+    print(f" {r(u['hours']):.3f}  {u['key']:<{kw}}  {u['desc']}".rstrip())
 print(f" ─────\n {total:.3f}\n")
 big = [(a, b) for a, b in gaps if b - a >= MIN_GAP]
-print("Gaps 30 min+:  " + (" · ".join(f"{a:%H:%M}–{b:%H:%M}" for a, b in big) or "none"))
+print("Gaps 30 min+:  " + (" · ".join(f"{a:%H:%M}–{b:%H:%M} ({span(a, b)})" for a, b in big) or "none"))
